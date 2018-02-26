@@ -12,7 +12,14 @@ All the configuration is done through the environment.
  - nginx worker are reduced from 4 to 1
  - nginx log files are renamed (this helps if this container is behind a nginx proxy)
  - health checks from bvberkum/docker-munin-server are used
+ - Add Timezone Support (jmdevince/docker-munin-server)
 
+
+### TimeZone Support
+
+Accepts standard timezone names
+
+* `TZ` (default UTC)
 
 ### HTTP Credentials 
 
@@ -85,6 +92,7 @@ docker run -d \
   -e ALERT_SENDER=alerts@example.com \
   -e NODES="server1:10.0.0.1 server2:10.0.0.2" \
   -e SNMP_NODES="router1:10.0.0.254:9999" \
+  -e TZ="America/Chicago" \
   munin-server
 ```
 

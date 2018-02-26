@@ -22,6 +22,7 @@ RUN apt update -qq \
         libnet-snmp-perl \
         netbase \
         logrotate \
+        tzdata \
     && apt clean && rm -rf /var/lib/apt/lists/* \
     && rm /etc/nginx/sites-enabled/default \
     && mkdir -p /var/cache/munin/www \

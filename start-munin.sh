@@ -2,6 +2,7 @@
 
 
 NODES=${NODES:-}
+TZ=${TZ:UTC}
 SNMP_NODES=${SNMP_NODES:-}
 SSH_NODES=${SSH_NODES:-}
 MUNIN_USERS=${MUNIN_USERS:-${MUNIN_USER:-user}}
@@ -11,6 +12,13 @@ SMTP_USE_TLS=${SMTP_USE_TLS:-false}
 SMTP_ALWAYS_SEND=${SMTP_ALWAYS_SEND:-true}
 SMTP_MESSAGE_DEFAULT='[${var:group};${var:host}] -> ${var:graph_title} -> warnings: ${loop<,>:wfields  ${var:label}=${var:value}} / criticals: ${loop<,>:cfields  ${var:label}=${var:value}}'
 SMTP_MESSAGE="${SMTP_MESSAGE:-$SMTP_MESSAGE_DEFAULT}"
+
+# set timezone
+if [[ -e /usr/share/zoneinfo/${TZ} ]]; then
+  rm -f /etc/localtime
+  ln -s /usr/share/zoneinfo/${TZ} /etc/localtime
+  echo ${TZ} > /etc/timezone
+fi
 
 truncate -s 0 "${MAIL_CONF_PATH}"
 
