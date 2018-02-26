@@ -1,13 +1,28 @@
-FROM ubuntu:latest
+FROM ubuntu:17.10
 
-MAINTAINER Leo Unbekandt <leo@scalingo.com>
+MAINTAINER Alexander Pitzer <pitzera@gmx.de>
 
 RUN adduser --system --home /var/lib/munin --shell /bin/false --uid 1103 --group munin
 
 RUN apt update -qq \
     && apt dist-upgrade -y \
-    && RUNLEVEL=1 DEBIAN_FRONTEND=noninteractive apt install -y -qq --no-install-recommends cron munin munin-node nginx wget heirloom-mailx patch spawn-fcgi libcgi-fast-perl rsyslog \
-    && apt clean \
+    && RUNLEVEL=1 DEBIAN_FRONTEND=noninteractive apt install -y -qq --no-install-recommends \
+        openssh-client \
+        cron \
+        munin \
+        nginx \
+        wget \
+        heirloom-mailx \
+        patch \
+        spawn-fcgi \
+        libcgi-fast-perl \
+        rsyslog \
+        curl \
+        ca-certificates \
+        libnet-snmp-perl \
+        netbase \
+        logrotate \
+    && apt clean && rm -rf /var/lib/apt/lists/* \
     && rm /etc/nginx/sites-enabled/default \
     && mkdir -p /var/cache/munin/www \
     && chown munin:munin /var/cache/munin/www \
@@ -17,14 +32,22 @@ RUN apt update -qq \
 VOLUME /var/lib/munin
 VOLUME /var/log/munin
 
-ADD ./munin.conf /etc/munin/munin.conf
-ADD ./nginx.conf /etc/nginx/nginx.conf
-ADD ./nginx-munin /etc/nginx/sites-enabled/munin
-ADD ./start-munin.sh /munin
-ADD ./munin-graph-logging.patch /usr/share/munin
-ADD ./munin-update-logging.patch /usr/share/munin
+COPY ./munin.conf /etc/munin/munin.conf
+COPY ./nginx.conf /etc/nginx/nginx.conf
+COPY ./nginx-munin /etc/nginx/sites-enabled/munin
+COPY ./start-munin.sh /munin
+COPY ./munin-graph-logging.patch /usr/share/munin
+COPY ./munin-update-logging.patch /usr/share/munin
 
-RUN cd /usr/share/munin && patch munin-graph < munin-graph-logging.patch && patch munin-update < munin-update-logging.patch
+RUN cd /usr/share/munin \
+  && patch munin-graph < munin-graph-logging.patch \
+  && patch munin-update < munin-update-logging.patch
+
+COPY ./check-munin.sh /check
+ENV HEALTH_HOSTINFO=
+ENV HEALTH_CHECK_NODES=1
+HEALTHCHECK --interval=5m --timeout=10s --retries=3 CMD /check || exit 1
 
 EXPOSE 8080
+
 CMD ["bash", "/munin"]

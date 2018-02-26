@@ -1,4 +1,6 @@
 #!/bin/bash
+
+
 NODES=${NODES:-}
 SNMP_NODES=${SNMP_NODES:-}
 SSH_NODES=${SSH_NODES:-}
@@ -138,6 +140,16 @@ chown munin:munin -R /var/cache/munin/www
 chmod g+w /var/cache/munin/www/index.html
 fi
 
+# remove err'ing xconsole rsyslog config
+mv /etc/rsyslog.d/50-default.conf /etc/rsyslog.d/50-default.conf.tmp
+head -n -4 /etc/rsyslog.d/50-default.conf.tmp > /etc/rsyslog.d/50-default.conf
+rm /etc/rsyslog.d/50-default.conf.tmp
+
+chgrp munin /var/log/munin /var/run/munin /var/lib/munin
+chmod g+rw /var/log/munin /var/run/munin /var/lib/munin
+# Clear crashed run
+rm -f /var/run/munin/*
+
 # start rsyslogd
 /usr/sbin/rsyslogd
 # start cron
@@ -146,7 +158,7 @@ fi
 # https://github.com/phusion/baseimage-docker/issues/198
 touch /etc/crontab /etc/cron.d/*
 # start local munin-node
-/usr/sbin/munin-node
+#/usr/sbin/munin-node
 echo "Using the following munin nodes:"
 echo $NODES
 echo "(ssh) $SSH_NODES"
