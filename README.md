@@ -4,6 +4,16 @@
 
 All the configuration is done through the environment.
 
+## Differences to Scalingo/docker-munin-server
+
+ - This image is based on ubuntu:17.10
+ - No recommended packages are installed
+ - munin-node is neither started or installed
+ - nginx worker are reduced from 4 to 1
+ - nginx log files are renamed (this helps if this container is behind a nginx proxy)
+ - health checks from bvberkum/docker-munin-server are used
+
+
 ### HTTP Credentials 
 
 These are the credentials used to authenticate the HTTP dashboard; both take a space-delimited list
@@ -58,6 +68,7 @@ docker build -t munin-server .
 docker run -d \
   -p 8080:8080 \
   -v /var/log/munin:/var/log/munin \
+  -v /var/log/nginx:/var/log/nginx \
   -v /var/lib/munin:/var/lib/munin \
   -v /var/run/munin:/var/run/munin \
   -v /var/cache/munin:/var/cache/munin \
