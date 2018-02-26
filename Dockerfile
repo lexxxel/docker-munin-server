@@ -6,7 +6,7 @@ RUN adduser --system --home /var/lib/munin --shell /bin/false --uid 1103 --group
 
 RUN apt update -qq \
     && apt dist-upgrade -y \
-    && RUNLEVEL=1 DEBIAN_FRONTEND=noninteractive apt install -y -qq --no-install-recommends cron munin munin-node nginx wget heirloom-mailx patch spawn-fcgi libcgi-fast-perl \
+    && RUNLEVEL=1 DEBIAN_FRONTEND=noninteractive apt install -y -qq --no-install-recommends cron munin munin-node nginx wget heirloom-mailx patch spawn-fcgi libcgi-fast-perl rsyslog \
     && apt clean \
     && rm /etc/nginx/sites-enabled/default \
     && mkdir -p /var/cache/munin/www \
