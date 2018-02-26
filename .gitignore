@@ -1,1 +1,4 @@
 test/munin/*
+/.idea/
+/cmake-build-debug/
+/CMakeLists.txt
