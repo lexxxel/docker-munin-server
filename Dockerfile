@@ -1,4 +1,4 @@
-FROM ubuntu:17.10
+FROM ubuntu:18.04
 
 MAINTAINER Alexander Pitzer <pitzera@gmx.de>
 
@@ -12,7 +12,7 @@ RUN apt update -qq \
         munin \
         nginx \
         wget \
-        heirloom-mailx \
+        s-nail \
         patch \
         spawn-fcgi \
         libcgi-fast-perl \
