@@ -6,14 +6,21 @@ All the configuration is done through the environment.
 
 ## Differences to Scalingo/docker-munin-server
 
- - This image is based on ubuntu:17.10
+ - This image is based on ubuntu:20.04
  - No recommended packages are installed
  - munin-node is neither started or installed
  - nginx worker are reduced from 4 to 1
  - nginx log files are renamed (this helps if this container is behind a nginx proxy)
  - health checks from bvberkum/docker-munin-server are used
  - Add Timezone Support (jmdevince/docker-munin-server)
+ - Add Support for custom Data retaning policy
 
+
+### Custom Data Retention Policy
+
+Accept Custom Graph Data Size. [Link](http://guide.munin-monitoring.org/en/latest/advanced/custom-rrd-sizing.html#custom-rrd-sizing) to Docu. 
+
+* `GRAPH_DATA_SIZE` 
 
 ### TimeZone Support
 

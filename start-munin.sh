@@ -12,6 +12,7 @@ SMTP_USE_TLS=${SMTP_USE_TLS:-false}
 SMTP_ALWAYS_SEND=${SMTP_ALWAYS_SEND:-true}
 SMTP_MESSAGE_DEFAULT='[${var:group};${var:host}] -> ${var:graph_title} -> warnings: ${loop<,>:wfields  ${var:label}=${var:value}} / criticals: ${loop<,>:cfields  ${var:label}=${var:value}}'
 SMTP_MESSAGE="${SMTP_MESSAGE:-$SMTP_MESSAGE_DEFAULT}"
+GRAPH_DATA_SIZE=${GRAPH_DATA_SIZE:-}
 
 # set timezone
 if [[ -e /usr/share/zoneinfo/${TZ} ]]; then
@@ -69,6 +70,16 @@ if [ ! -f /etc/munin/htpasswd.users ]; then
   done
 fi
 
+if [ -z "$GRAPH_DATA_SIZE" ]
+then
+  sed -i 's/^.*graph_data_size.*$/#graph_data_size custom 2d, 10m for 14d, 15h for 90d, 30m for 1y, 12h for 10y/g' /etc/munin/munin.conf
+else
+  sed -i "s/^.*graph_data_size.*$/graph_data_size ${GRAPH_DATA_SIZE}/g" /etc/munin/munin.conf
+fi
+
+# clean old node list
+sed -i '/^#--start-nodes--#/,/^#--end-nodes--#$/{/^#--start-nodes--#/!{/\$/!d}}' /etc/munin/munin.conf
+
 # generate node list
 for NODE in $NODES
 do
@@ -90,7 +101,7 @@ EOF
     fi
 done
 
-# generate node list
+# generate snmp node list
 for NODE in $SNMP_NODES
 do
   NAME=`echo $NODE | cut -d ":" -f1`
@@ -130,6 +141,10 @@ EOF
     echo "Added SSH node '$NAME' '$HOST'"
     fi
 done
+
+# append end node list tag
+echo "#--end-nodes--#" >> /etc/munin/munin.conf
+
 
 [ -d /var/cache/munin/www ] || mkdir /var/cache/munin/www
 # placeholder html to prevent permission error

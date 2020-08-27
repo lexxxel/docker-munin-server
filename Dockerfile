@@ -1,8 +1,8 @@
-FROM ubuntu:19.04
+FROM ubuntu:20.04
 
-MAINTAINER Alexander Pitzer <pitzera@gmx.de>
+MAINTAINER Alexander Petermann <petermann.a@gmx.de>
 
-RUN adduser --system --home /var/lib/munin --shell /bin/false --uid 1103 --group munin
+RUN adduser --system --home /var/lib/munin --shell /bin/false --uid 999 --group munin
 
 RUN apt update -qq \
     && apt dist-upgrade -y \
