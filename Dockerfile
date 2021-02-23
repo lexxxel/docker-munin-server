@@ -1,6 +1,6 @@
 FROM ubuntu:20.04
 
-MAINTAINER Alexander Petermann <petermann.a@gmx.de>
+MAINTAINER Alexander Petermann <petermann.a@gmx.net>
 
 RUN adduser --system --home /var/lib/munin --shell /bin/false --uid 999 --group munin
 
